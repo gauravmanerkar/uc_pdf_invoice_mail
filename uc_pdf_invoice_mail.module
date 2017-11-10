@@ -34,8 +34,8 @@ function uc_pdf_invoice_mail_mail_alter(&$message) {
         $file->filesize  = filesize($file_name);
         $file->timestamp = REQUEST_TIME;
         $file->status    = FILE_STATUS_PERMANENT;
-        $file            = file_save($file);    
-        $pdf_attachment = array(
+        $file            = file_save($file);
+        $pdf_attachment  = array(
           'filecontent' => file_get_contents($file->uri),
           'filemime' => $file->filemime,
           'filename' => 'invoice.pdf',
