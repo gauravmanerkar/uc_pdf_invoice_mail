@@ -46,4 +46,3 @@ and rename it to "dompdf".
 'Ubercart - extra' in the Drupal module administration page.
 
 7) Thats it!. Now invoice attachment will get sent along with invoice mail.
-
