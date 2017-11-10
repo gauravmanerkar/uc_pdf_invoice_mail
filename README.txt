@@ -7,14 +7,8 @@
  * Developed by Gaurav Manerkar
  */
 
-This module created PDF Invoices and store orders and
-sends PDF as and attachment to customers
-
-DEPENDENCIES
-
-There are dependencies for this module:
-
- DOMPDF
+This module generates PDF Invoice of order and sends PDF 
+as an attachment to customer
 
 REQUIREMENTS
 This module requires the following modules:
