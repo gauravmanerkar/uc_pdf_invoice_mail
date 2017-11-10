@@ -1,18 +1,18 @@
 <?php
 
 /* include autoloader */
-require_once drupal_get_path('module', 'uc_pdf_invoice_mail'). '/lib/dompdf/autoload.inc.php';
+require_once libraries_get_path('dompdf').'/autoload.inc.php';
 
 /* reference the Dompdf namespace */
 use Dompdf\Dompdf;
 
-/**
- * Implements hook_mail_alter()
- */
 function uc_pdf_invoice_mail_mail_alter(&$message) {
     if (strpos($message['id'], 'uc_order_action-mail') !== FALSE && strpos($message['params']['template'],'customer') !== FALSE) {
+      
+      if(file_exists(libraries_get_path('dompdf').'/autoload.inc.php')) {
         $body     = $message['body'];
         $invoiceData  = implode("", $body);
+
         if(!empty($invoiceData)) {
             $dompdf = new Dompdf();
             $dompdf->loadHtml($invoiceData);
@@ -53,5 +53,6 @@ function uc_pdf_invoice_mail_mail_alter(&$message) {
             }
             $message['params']['attachments'][] = $pdf_attachment;
         }
+      }
    }   
 }
