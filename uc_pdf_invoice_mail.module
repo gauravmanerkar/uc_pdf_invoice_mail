@@ -1,58 +1,53 @@
 <?php
 
 /* include autoloader */
-require_once libraries_get_path('dompdf').'/autoload.inc.php';
+require_once libraries_get_path('dompdf') . '/autoload.inc.php';
 
 /* reference the Dompdf namespace */
 use Dompdf\Dompdf;
 
 function uc_pdf_invoice_mail_mail_alter(&$message) {
-    if (strpos($message['id'], 'uc_order_action-mail') !== FALSE && strpos($message['params']['template'],'customer') !== FALSE) {
-      
-      if(file_exists(libraries_get_path('dompdf').'/autoload.inc.php')) {
-        $body     = $message['body'];
-        $invoiceData  = implode("", $body);
-
-        if(!empty($invoiceData)) {
-            $dompdf = new Dompdf();
-            $dompdf->loadHtml($invoiceData);
-            $dompdf->render();
-
-            $fname = drupal_tempnam('temporary://', 'invoice_') . '.pdf';
-            $file_name = drupal_realpath($fname);
-            $fname = str_replace('temporary://', '', $fname);
-            $output = $dompdf->output();
-            file_put_contents($file_name, $output);
-
-            $file            = new StdClass();
-            $file->uid       = 1;
-            $file->filename  = $file_name;
-            $file->uri       = $file_name;
-            $file->filemime  = file_get_mimetype($file_name);
-            $file->filesize  = filesize($file_name);
-            $file->timestamp = REQUEST_TIME;
-            $file->status    = FILE_STATUS_PERMANENT;
-            $file            = file_save($file);
-
-            $pdf_attachment = array(
-                'filecontent' => file_get_contents($file->uri),
-                'filemime' => $file->filemime,
-                'filename' => 'invoice.pdf',
-            );
-
-            if(module_exists('mailsystem') &&  module_exists('mimemail')) {
-                $mailSystemVariables = variable_get('mail_system');
-                 variable_set('mail_system',
-                    array_merge(
-                        $mailSystemVariables,
-                        array(
-                          'uc_order_action-mail'  => 'MimeMailSystem',
-                        )
-                    )
+    if (strpos($message['id'], 'uc_order_action-mail') !== FALSE && strpos($message['params']['template'], 'customer') !== FALSE) {
+        
+        if (file_exists(libraries_get_path('dompdf') . '/autoload.inc.php')) {
+            $body        = $message['body'];
+            $invoiceData = implode("", $body);
+            
+            if (!empty($invoiceData)) {
+                $dompdf = new Dompdf();
+                $dompdf->loadHtml($invoiceData);
+                $dompdf->render();
+                
+                $fname     = drupal_tempnam('temporary://', 'invoice_') . '.pdf';
+                $file_name = drupal_realpath($fname);
+                $fname     = str_replace('temporary://', '', $fname);
+                $output    = $dompdf->output();
+                file_put_contents($file_name, $output);
+                
+                $file            = new StdClass();
+                $file->uid       = 1;
+                $file->filename  = $file_name;
+                $file->uri       = $file_name;
+                $file->filemime  = file_get_mimetype($file_name);
+                $file->filesize  = filesize($file_name);
+                $file->timestamp = REQUEST_TIME;
+                $file->status    = FILE_STATUS_PERMANENT;
+                $file            = file_save($file);
+                
+                $pdf_attachment = array(
+                    'filecontent' => file_get_contents($file->uri),
+                    'filemime' => $file->filemime,
+                    'filename' => 'invoice.pdf'
                 );
+                
+                if (module_exists('mailsystem') && module_exists('mimemail')) {
+                    $mailSystemVariables = variable_get('mail_system');
+                    variable_set('mail_system', array_merge($mailSystemVariables, array(
+                        'uc_order_action-mail' => 'MimeMailSystem'
+                    )));
+                }
+                $message['params']['attachments'][] = $pdf_attachment;
             }
-            $message['params']['attachments'][] = $pdf_attachment;
         }
-      }
-   }   
+    }
 }
