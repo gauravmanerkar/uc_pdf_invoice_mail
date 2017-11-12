@@ -18,15 +18,17 @@ Mime Mail
 -- INSTALLATION --
 To install Ubercart PDF Invoice Mail:
 
-  1. Upload the 'uc_pdf_invoice_mail' folder into your module directory and activate
-     the modules.
+  1. Upload the 'uc_pdf_invoice_mail' folder into your module directory and
+     activate the modules.
 
 
-  2. Upload dompdf library (https://github.com/dompdf/dompdf/releases) into the libraries
-     folder so that it looks like 'sites/all/libraries/dompdf/autoload.inc.php'.
+  2. Upload dompdf library (https://github.com/dompdf/dompdf/releases) 
+     into the libraries folder so that it looks like 
+     'sites/all/libraries/dompdf/autoload.inc.php'.
 
 
-  3. Enable the Ubercart PDF Invoice Mail module under 'Ubercart - extra' in the Drupal 
-     module administration page.
+  3. Enable the Ubercart PDF Invoice Mail module under 'Ubercart - extra'
+    in the Drupal module administration page.
+    
 
   4. Thats it!. Now invoice attachment will get sent along with invoice mail.
