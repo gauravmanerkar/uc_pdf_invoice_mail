@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Original development by Gaurav Manerkar .
+ * Generates PDF of order invoice and sends as attachment in mail.
  */
 
 require_once libraries_get_path('dompdf') . '/autoload.inc.php';
@@ -13,7 +13,7 @@ use Dompdf\Dompdf;
  * Implements hook_mail_alter().
  */
 function uc_pdf_invoice_mail_mail_alter(&$message) {
-  if (strpos($message['id'], 'uc_order_action-mail') !== FALSE && strpos($message['params']['template'], 'customer') !== FALSE) {
+  if (strpos($message['id'], 'uc_order_action-mail') !== FALSE) {
     if (file_exists(libraries_get_path('dompdf') . '/autoload.inc.php')) {
       $body        = $message['body'];
       $invoiceData = implode("", $body);

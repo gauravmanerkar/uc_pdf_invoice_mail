@@ -1,42 +1,32 @@
-/**
- * uc_pdf_invoice_mail: Generates PDF of order invoice and sends 
- * as attachment in mail to customer
- *
- * Original credits, 1.x development:
- *
- * Developed by Gaurav Manerkar
- */
+-- SUMMARY --
 
 This module generates PDF Invoice of order and sends PDF 
-as an attachment to customer
+as an attachment to customer.
 
-REQUIREMENTS
+-- REQUIREMENTS --
+PHP 5.3 or higher versions.
+Drupal 7.x.
+DOMPDF 0.8.x Library or higher: https://github.com/dompdf/dompdf/releases
+
+-- MODULE DEPENDENCY --
 This module requires the following modules:
 
-Libraries
 Ubercart
 Mail system
 Mime Mail
 
-INSTALLATION
-
+-- INSTALLATION --
 To install Ubercart PDF Invoice Mail:
 
-1) Download the latest release of this module .
+  1. Upload the 'uc_pdf_invoice_mail' folder into your module directory and activate
+     the modules.
 
-2) Uncompress the archive in your Ubercart contrib directory:
-[your Drupal root]/sites/all/modules.
 
-3) Download the lastest stable DOMPDF(https://github.com/dompdf/dompdf/releases) 
-library from github.
+  2. Upload dompdf library (https://github.com/dompdf/dompdf/releases) into the libraries
+     folder so that it looks like 'sites/all/libraries/dompdf/autoload.inc.php'.
 
-4) After download extract it to your sites sites/all/libraries folder 
-and rename it to "dompdf".
 
-5) Make sure libraries folder have structure 
-   sites/all/libraries/dompdf/autoload.inc.php
+  3. Enable the Ubercart PDF Invoice Mail module under 'Ubercart - extra' in the Drupal 
+     module administration page.
 
-6) Enable the Ubercart PDF Invoice Mail module under 
-'Ubercart - extra' in the Drupal module administration page.
-
-7) Thats it!. Now invoice attachment will get sent along with invoice mail.
+  4. Thats it!. Now invoice attachment will get sent along with invoice mail.

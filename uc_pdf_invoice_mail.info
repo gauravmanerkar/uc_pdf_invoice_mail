@@ -1,5 +1,5 @@
 name = Ubercart PDF Invoice Mail
-description = "Generates PDF of order invoice and sends as attachment in mail to customer"
+description = "Generates PDF of order invoice and sends as attachment in mail"
 
 dependencies[] = uc_cart
 dependencies[] = uc_store

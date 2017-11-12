@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * @file
+ * Install file for Ubercart PDF Invoice Mail. Checks requirements.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function uc_pdf_invoice_mail_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+
+  if ($phase == 'install') {
+
+    if (version_compare(phpversion(), '5.3.0', '<')) {
+      $requirements['php_version']['title'] = $t('PHP version');
+      $requirements['php_version']['value'] = check_plain(phpversion());
+      $requirements['php_version']['severity'] = REQUIREMENT_ERROR;
+      $requirements['php_version']['description'] = $t('Ubercart PDF Invoice Mail could not be installed. DOMPDF requires PHP 5.3 or higher.');
+    }
+
+    // Make sure that Libraries module is loaded.
+    if (!function_exists('libraries_get_path')) {
+      module_load_include('module', 'libraries');
+    }
+    // - libraries_detect does not work in the install phase so we can't easily check the exact version
+    // - We check if sites/all/libraries/dompdf/README.md is found.
+    $path = libraries_get_path('dompdf');
+    if (!is_file($path . '/README.md')) {
+      $requirements['dompdf']['severity'] = REQUIREMENT_ERROR;
+      $requirements['dompdf']['description'] = $t('Dompdf could not be installed. Dompdf version 0.8.x or higher not found. See README.txt.');
+    }
+  }
+
+  if ($phase == 'runtime') {
+    $sdk = libraries_detect('dompdf');
+    if (!is_array($sdk) || !$sdk['installed']) {
+      $requirements['dompdf']['title'] = $t('Dompdf');
+      $requirements['dompdf']['value'] = $t('Not installed');
+      $requirements['dompdf']['severity'] = REQUIREMENT_ERROR;
+      $requirements['dompdf']['description'] = $t('Dompdf library version 0.8.x higher not found. See README.txt');
+    }
+    elseif ($sdk['version'] < '0.8') {
+      $requirements['dompdf']['title'] = $t('Dompdf');
+      $requirements['dompdf']['value'] = $t('Unsupported version detected');
+      $requirements['dompdf']['severity'] = REQUIREMENT_ERROR;
+      $requirements['dompdf']['description'] = $t('Version @version detected. See README.txt', array('@version' => $sdk['version']));
+    }
+    else {
+      $requirements['dompdf']['title'] = $t('Dompdf');
+      $requirements['dompdf']['value'] = $t('Version @version detected.', array('@version' => $sdk['version']));
+      $requirements['dompdf']['severity'] = REQUIREMENT_OK;
+    }
+  }
+  return $requirements;
+}
