@@ -14,6 +14,7 @@ This module requires the following modules:
 Ubercart
 Mail system
 Mime Mail
+libraries
 
 -- INSTALLATION --
 To install Ubercart PDF Invoice Mail:
@@ -29,6 +30,6 @@ To install Ubercart PDF Invoice Mail:
 
   3. Enable the Ubercart PDF Invoice Mail module under 'Ubercart - extra'
     in the Drupal module administration page.
-    
+
 
   4. Thats it!. Now invoice attachment will get sent along with invoice mail.
