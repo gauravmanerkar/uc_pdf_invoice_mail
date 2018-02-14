@@ -1,0 +1,11 @@
+name: Ubercart PDF Invoice Mail
+description: 'Generates PDF of order invoice and sends as attachment in mail.'
+package: Ubercart - extra
+type: module
+version: '8.x-1.0'
+core: 8.x
+dependencies:
+  - uc_order
+  - uc_product
+  - uc_cart
+  - uc_store
