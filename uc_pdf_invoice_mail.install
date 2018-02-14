@@ -25,10 +25,7 @@ function uc_pdf_invoice_mail_requirements($phase) {
     if (!function_exists('libraries_get_path')) {
       module_load_include('module', 'libraries');
     }
-    // - libraries_detect does not work in the install phase
-    // so we can't easily check the exact version
-    // - We check if sites/all/libraries/dompdf/README.md
-    // is found.
+
     $path = libraries_get_path('dompdf');
     if (!is_file($path . '/README.md')) {
       $requirements['dompdf']['severity'] = REQUIREMENT_ERROR;

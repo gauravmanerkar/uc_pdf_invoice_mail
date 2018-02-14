@@ -21,17 +21,17 @@ function uc_pdf_invoice_mail_mail_alter(&$message) {
         $dompdf = new Dompdf();
         $dompdf->loadHtml($invoiceData);
         $dompdf->render();
-        $fname     = drupal_tempnam('temporary://', 'invoice_') . '.pdf';
-        $file_name = drupal_realpath($fname);
-        $fname     = str_replace('temporary://', '', $fname);
+
+        $filename     = drupal_tempnam('temporary://', 'invoice_') . '.pdf';
         $output    = $dompdf->output();
-        file_put_contents($file_name, $output);
+        file_put_contents($filename, $output);
+
         $file            = new StdClass();
         $file->uid       = 1;
-        $file->filename  = $file_name;
-        $file->uri       = $file_name;
-        $file->filemime  = file_get_mimetype($file_name);
-        $file->filesize  = filesize($file_name);
+        $file->filename  = $filename;
+        $file->uri       = $filename;
+        $file->filemime  = file_get_mimetype($filename);
+        $file->filesize  = filesize($filename);
         $file->timestamp = REQUEST_TIME;
         $file->status    = FILE_STATUS_PERMANENT;
         $file            = file_save($file);
@@ -40,14 +40,42 @@ function uc_pdf_invoice_mail_mail_alter(&$message) {
           'filemime' => $file->filemime,
           'filename' => 'invoice.pdf',
         );
-        if (module_exists('mailsystem') && module_exists('mimemail')) {
-          $mailSystemVariables = variable_get('mail_system');
-          variable_set('mail_system', array_merge($mailSystemVariables, array(
-            'uc_order_action-mail' => 'MimeMailSystem',
-          )));
-        }
-        $message['params']['attachments'][] = $pdf_attachment;
+        $message['params']['attachment'] = $pdf_attachment;
+        uc_pdf_invoice_mail_add_attachment($message);
       }
     }
+  }
+}
+
+/**
+ * Update Message ContentType.
+ */
+function uc_pdf_invoice_mail_add_attachment(array &$message) {
+  if(!empty($message['params']['attachment']))
+  {
+      $params = $message['params'];
+    $attachment = $params['attachment'];
+    $filename = basename($attachment['filename']);
+    $filecontent = $attachment['filecontent'];
+    $content = chunk_split(base64_encode($filecontent));
+    $uid = md5(uniqid(time()));
+
+    $messageHeader = &$message['headers'];
+    $originalContentType = $messageHeader['Content-Type'];
+    $messageHeader['Content-Type'] = "multipart/mixed; boundary=\"$uid\"";
+
+    $header = "This is a multi-part message in MIME format.\r\n";
+    $header .= "--$uid\r\n";
+    $header .= "Content-Type: $originalContentType \r\n\r\n";
+    $header .= wordwrap(implode('', $message['body'])) . "\r\n\r\n";
+    $header .= "--$uid\r\n";
+    $header .= "Content-Type: $attachment[filemime];
+              name=\"" . $filename . "\"\r\n";
+    $header .= "Content-Transfer-Encoding: base64\r\n";
+    $header .= "Content-Disposition: attachment;
+              filename=\"" . $filename . "\"\r\n\r\n";
+    $header .= $content . "\r\n\r\n";
+    $header .= "--$uid--";
+    $message['body'] = [$header];
   }
 }
