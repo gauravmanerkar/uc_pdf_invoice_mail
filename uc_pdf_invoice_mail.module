@@ -74,7 +74,7 @@ function uc_pdf_invoice_mail_mail_alter(&$message) {
         $file->status    = FILE_STATUS_PERMANENT;
         $file            = file_save($file);
 
-        $pdf_attachment  = array(
+        $pdf_attachment = array(
           'filecontent' => file_get_contents($file->uri),
           'filemime' => $file->filemime,
           'filename' => 'invoice.pdf',
@@ -90,7 +90,7 @@ function uc_pdf_invoice_mail_mail_alter(&$message) {
  * Update Message ContentType.
  */
 function uc_pdf_invoice_mail_add_attachment(array &$message) {
-  if( !empty($message['params']['attachment']) )
+  if (!empty($message['params']['attachment']))
   {
     $params = $message['params'];
     $attachment = $params['attachment'];
