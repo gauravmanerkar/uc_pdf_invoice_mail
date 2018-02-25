@@ -36,7 +36,7 @@ function uc_pdf_invoice_mail_mail_alter(&$message) {
       $pdf->setFileName($filesystem->basename($filename));
       $pdf->setPermanent();
       $pdf->save();
-      $pdf_attachment = [ 
+      $pdf_attachment = [
         'filecontent' => file_get_contents($pdf->getFileUri()),
         'filemime' => $pdf->getMimeType(),
         'filename' => 'invoice.pdf',
@@ -85,10 +85,7 @@ function uc_pdf_invoice_mail_add_attachment(array &$message) {
 function uc_pdf_invoice_mail_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
     case 'help.page.uc_pdf_invoice_mail':
-     $text = file_get_contents(dirname(__FILE__) . "/README.txt");
-     return '<pre>' . $text . '</pre>'; 
+      $text = file_get_contents(dirname(__FILE__) . "/README.txt");
+      return '<pre>' . $text . '</pre>';
   }
 }
-
-
-
