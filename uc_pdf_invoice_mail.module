@@ -9,6 +9,7 @@ require_once DRUPAL_ROOT . '/vendor/autoload.php';
 
 use Dompdf\Dompdf;
 use Drupal\file\Entity\File;
+use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
  * Implements hook_mail_alter().
@@ -75,6 +76,16 @@ function uc_pdf_invoice_mail_add_attachment(array &$message) {
     $header .= $content . "\r\n\r\n";
     $header .= "--$uid--";
     $message['body'] = [$header];
+  }
+}
+
+/**
+ * Implements hook_help().
+ */
+function uc_pdf_invoice_mail_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.uc_pdf_invoice_mail':
+      
   }
 }
 
