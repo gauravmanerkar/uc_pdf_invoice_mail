@@ -4,8 +4,7 @@ package: Ubercart - extra
 type: module
 core: 8.x
 dependencies:
-  - uc_order
-  - uc_product
-  - uc_cart
-  - uc_store
-  
+  - drupal:uc_order
+  - drupal:uc_product
+  - drupal:uc_cart
+  - drupal:uc_store

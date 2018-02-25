@@ -7,9 +7,11 @@
 
 require_once DRUPAL_ROOT . '/vendor/autoload.php';
 
-use Drupal\Core\File;
 use Dompdf\Dompdf;
 
+/**
+ * Implements hook_mail_alter().
+ */
 function uc_pdf_invoice_mail_mail_alter(&$message) {
  if (strpos($message['id'], 'uc_order_action-mail') !== FALSE) {
 	$body        = $message['body'];
@@ -75,3 +77,28 @@ function uc_pdf_invoice_mail_add_attachment(array &$message) {
     $message['body'] = [$header];
   }
 }
+
+/**
+ * Implements hook_help().
+ *
+ * @inheritdoc
+ */
+function uc_pdf_invoice_mail_help($route_name, \Drupal\Core\Routing\RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.MYMODULE':
+      $text = file_get_contents(dirname(__FILE__) . "/README.md");
+      if (! \Drupal::moduleHandler()->moduleExists('markdown')) {
+        return '<pre>' . $text . '</pre>';
+      }
+      else {
+        // Use the Markdown filter to render the README.
+        $filter_manager = \Drupal::service('plugin.manager.filter');
+        $settings = \Drupal::configFactory()->get('markdown.settings')->getRawData();
+        $config = array('settings' => $settings);
+        $filter = $filter_manager->createInstance('markdown', $config);
+        return $filter->process($text, 'en');
+      }
+  }
+  return NULL;
+}
+
