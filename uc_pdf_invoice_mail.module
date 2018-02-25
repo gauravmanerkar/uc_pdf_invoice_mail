@@ -19,15 +19,15 @@ function uc_pdf_invoice_mail_mail_alter(&$message) {
       $dompdf->loadHtml($invoiceData);
       $dompdf->render();
 
-      $filename     = tempnam('temporary://', 'invoice_') . '.pdf';
-      $output    = $dompdf->output();
+      $filename = tempnam('temporary://', 'invoice_') . '.pdf';
+      $output   = $dompdf->output();
       file_put_contents($filename, $output);
 
       $filesystem = \Drupal::service('file_system');
       $pdf = \Drupal\file\Entity\File::create();
 	  $pdf->setFileUri($filename);
 	  $pdf->setOwnerId(1);
-	  $pdf->setMimeType(\Drupal::service('file.mime_type.guesser')->guess($file_name));
+	  $pdf->setMimeType(\Drupal::service('file.mime_type.guesser')->guess($filename));
 	  $pdf->setFileName($filesystem->basename($filename));
 	  $pdf->setPermanent();
 	  $pdf->save();

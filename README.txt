@@ -6,7 +6,8 @@ attachment to customer.
 
 -- REQUIREMENTS --
 
-* DOMPDF Library (Install using composer: Command - composer require dompdf/dompdf)
+* DOMPDF Library 
+  (Install using composer: Command - composer require dompdf/dompdf)
 
 * Ubercart
 
