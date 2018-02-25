@@ -64,15 +64,16 @@ function uc_pdf_invoice_mail_mail_alter(&$message) {
         $output   = $dompdf->output();
         file_put_contents($filename, $output);
 
-        $file            = new StdClass();
-        $file->uid       = 1;
-        $file->filename  = $filename;
-        $file->uri       = $filename;
-        $file->filemime  = file_get_mimetype($filename);
-        $file->filesize  = filesize($filename);
-        $file->timestamp = REQUEST_TIME;
-        $file->status    = FILE_STATUS_PERMANENT;
-        $file            = file_save($file);
+        $file             =  new StdClass();
+        $file->uid        =  1;
+        $file->filename   =  $filename;
+        $file->uri        =  $filename;
+        $file->filemime   =  file_get_mimetype($filename);
+        $file->filesize   =  filesize($filename);
+        $file->timestamp  =  REQUEST_TIME;
+        $file->status     =  FILE_STATUS_PERMANENT;
+        $file             =  file_save($file);
+
         $pdf_attachment  = array(
           'filecontent' => file_get_contents($file->uri),
           'filemime' => $file->filemime,
@@ -89,7 +90,7 @@ function uc_pdf_invoice_mail_mail_alter(&$message) {
  * Update Message ContentType.
  */
 function uc_pdf_invoice_mail_add_attachment(array &$message) {
-  if(!empty($message['params']['attachment'])) 
+  if( !empty($message['params']['attachment']) )
   {
     $params = $message['params'];
     $attachment = $params['attachment'];
