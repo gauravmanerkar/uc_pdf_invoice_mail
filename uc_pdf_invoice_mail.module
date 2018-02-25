@@ -13,37 +13,38 @@ use Dompdf\Dompdf;
  * Implements hook_mail_alter().
  */
 function uc_pdf_invoice_mail_mail_alter(&$message) {
- if (strpos($message['id'], 'uc_order_action-mail') !== FALSE) {
-  $body        = $message['body'];
-  $invoiceData = implode("", $body);
-	if (!empty($invoiceData)) {
-      $dompdf = new Dompdf();
-      $dompdf->loadHtml($invoiceData);
-      $dompdf->render();
+  if (strpos($message['id'], 'uc_order_action-mail') !== FALSE) {
+    if (file_exists(libraries_get_path('dompdf') . '/autoload.inc.php')) {
+      $body        = $message['body'];
+      $invoiceData = implode("", $body);
+      if (!empty($invoiceData)) {
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($invoiceData);
+        $dompdf->render();
 
-      $filename = tempnam('temporary://', 'invoice_') . '.pdf';
-      $output   = $dompdf->output();
-      file_put_contents($filename, $output);
+        $filename = tempnam('temporary://', 'invoice_') . '.pdf';
+        $output   = $dompdf->output();
+        file_put_contents($filename, $output);
 
-      $filesystem = \Drupal::service('file_system');
-      $pdf = \Drupal\file\Entity\File::create();
-	  $pdf->setFileUri($filename);
-	  $pdf->setOwnerId(1);
-	  $pdf->setMimeType(\Drupal::service('file.mime_type.guesser')->guess($filename));
-	  $pdf->setFileName($filesystem->basename($filename));
-	  $pdf->setPermanent();
-	  $pdf->save();
+        $filesystem = \Drupal::service('file_system');
+        $pdf = \Drupal\file\Entity\File::create();
+        $pdf->setFileUri($filename);
+	    $pdf->setOwnerId(1);
+	    $pdf->setMimeType(\Drupal::service('file.mime_type.guesser')->guess($filename));
+	    $pdf->setFileName($filesystem->basename($filename));
+	    $pdf->setPermanent();
+	    $pdf->save();
 
-      $pdf_attachment  = array(
+        $pdf_attachment = array(
           'filecontent' => file_get_contents($pdf->getFileUri()),
           'filemime' => $pdf->getMimeType(),
           'filename' => 'invoice.pdf',
-      );
-
-      $message['params']['attachment'] = $pdf_attachment;
-      uc_pdf_invoice_mail_add_attachment($message);
+        );
+        $message['params']['attachment'] = $pdf_attachment;
+        uc_pdf_invoice_mail_add_attachment($message);
+      }
     }
- }
+  }
 }
 
 /**
@@ -94,11 +95,10 @@ function uc_pdf_invoice_mail_help($route_name, \Drupal\Core\Routing\RouteMatchIn
         // Use the Markdown filter to render the README.
         $filter_manager = \Drupal::service('plugin.manager.filter');
         $settings = \Drupal::configFactory()->get('markdown.settings')->getRawData();
-        $config = array('settings' => $settings);
+        $config = ['settings' => $settings];
         $filter = $filter_manager->createInstance('markdown', $config);
         return $filter->process($text, 'en');
       }
   }
   return NULL;
 }
-
