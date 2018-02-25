@@ -48,31 +48,30 @@ function uc_pdf_invoice_mail_mail_alter(&$message) {
  * Update Message ContentType.
  */
 function uc_pdf_invoice_mail_add_attachment(array &$message) {
-  if(!empty($message['params']['attachment']))
-  {
-  	  $params = $message['params'];
-	  $attachment = $params['attachment'];
-	  $filename = basename($attachment['filename']);
-	  $filecontent = $attachment['filecontent'];
-	  $content = chunk_split(base64_encode($filecontent));
-	  $uid = md5(uniqid(time()));
+  if (!empty($message['params']['attachment'])) {
+    $params = $message['params'];
+    $attachment = $params['attachment'];
+    $filename = basename($attachment['filename']);
+    $filecontent = $attachment['filecontent'];
+    $content = chunk_split(base64_encode($filecontent));
+    $uid = md5(uniqid(time()));
 
-	  $messageHeader = &$message['headers'];
-	  $originalContentType = $messageHeader['Content-Type'];
-	  $messageHeader['Content-Type'] = "multipart/mixed; boundary=\"$uid\"";
+    $messageHeader = &$message['headers'];
+    $originalContentType = $messageHeader['Content-Type'];
+    $messageHeader['Content-Type'] = "multipart/mixed; boundary=\"$uid\"";
 
-	  $header = "This is a multi-part message in MIME format.\r\n";
-	  $header .= "--$uid\r\n";
-	  $header .= "Content-Type: $originalContentType \r\n\r\n";
-	  $header .= wordwrap(implode('', $message['body'])) . "\r\n\r\n";
-	  $header .= "--$uid\r\n";
-	  $header .= "Content-Type: $attachment[filemime];
-	            name=\"" . $filename . "\"\r\n";
-	  $header .= "Content-Transfer-Encoding: base64\r\n";
-	  $header .= "Content-Disposition: attachment;
-	            filename=\"" . $filename . "\"\r\n\r\n";
-	  $header .= $content . "\r\n\r\n";
-	  $header .= "--$uid--";
-	  $message['body'] = [$header];
+    $header = "This is a multi-part message in MIME format.\r\n";
+    $header .= "--$uid\r\n";
+    $header .= "Content-Type: $originalContentType \r\n\r\n";
+    $header .= wordwrap(implode('', $message['body'])) . "\r\n\r\n";
+    $header .= "--$uid\r\n";
+    $header .= "Content-Type: $attachment[filemime];
+              name=\"" . $filename . "\"\r\n";
+    $header .= "Content-Transfer-Encoding: base64\r\n";
+    $header .= "Content-Disposition: attachment;
+              filename=\"" . $filename . "\"\r\n\r\n";
+    $header .= $content . "\r\n\r\n";
+    $header .= "--$uid--";
+    $message['body'] = [$header];
   }
 }

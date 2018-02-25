@@ -13,7 +13,7 @@ function uc_pdf_invoice_mail_requirements($phase) {
   if ($phase == 'install') {
     return [
       'dompdf_library_downloaded' => [
-        'description' => $library_exists ? '' : t('The Dompdf library requires the external Swift Mailer library. The recommended way is using composer :  <a href="#">@command</a>', ['@command' => 'composer require dompdf/dompdf']),
+        'description' => $library_exists ? '' : t('The module requires the external DOMPDF library. The recommended way is using composer :  <a href="#">@command</a>', ['@command' => 'composer require dompdf/dompdf']),
         'severity' => $library_exists ? REQUIREMENT_OK : REQUIREMENT_ERROR,
       ],
     ];
