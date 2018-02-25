@@ -8,6 +8,7 @@
 require_once DRUPAL_ROOT . '/vendor/autoload.php';
 
 use Dompdf\Dompdf;
+use Drupal\file\Entity\File;
 
 /**
  * Implements hook_mail_alter().
@@ -26,14 +27,14 @@ function uc_pdf_invoice_mail_mail_alter(&$message) {
       file_put_contents($filename, $output);
 
       $filesystem = \Drupal::service('file_system');
-      $pdf = \Drupal\file\Entity\File::create();
+      $pdf = File::create();
       $pdf->setFileUri($filename);
 	  $pdf->setOwnerId(1);
 	  $pdf->setMimeType(\Drupal::service('file.mime_type.guesser')->guess($filename));
 	  $pdf->setFileName($filesystem->basename($filename));
 	  $pdf->setPermanent();
 	  $pdf->save();
-
+      
       $pdf_attachment = array(
         'filecontent' => file_get_contents($pdf->getFileUri()),
         'filemime' => $pdf->getMimeType(),
