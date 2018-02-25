@@ -14,8 +14,8 @@ use Dompdf\Dompdf;
  */
 function uc_pdf_invoice_mail_mail_alter(&$message) {
  if (strpos($message['id'], 'uc_order_action-mail') !== FALSE) {
-	$body        = $message['body'];
-	$invoiceData = implode("", $body);
+  $body        = $message['body'];
+  $invoiceData = implode("", $body);
 	if (!empty($invoiceData)) {
       $dompdf = new Dompdf();
       $dompdf->loadHtml($invoiceData);
