@@ -10,6 +10,44 @@ require_once libraries_get_path('dompdf') . '/autoload.inc.php';
 use Dompdf\Dompdf;
 
 /**
+ * Implements hook_help().
+ */
+function uc_pdf_invoice_mail_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#uc_pdf_invoice_mail':
+
+      $filepath = dirname(__FILE__) . '/README.md';
+      if (file_exists($filepath)) {
+        $readme = file_get_contents($filepath);
+      }
+      else {
+        $filepath = dirname(__FILE__) . '/README.txt';
+        if (file_exists($filepath)) {
+          $readme = file_get_contents($filepath);
+        }
+      }
+      if (!isset($readme)) {
+        return NULL;
+      }
+      if (module_exists('markdown')) {
+        $filters = module_invoke('markdown', 'filter_info');
+        $info = $filters['filter_markdown'];
+        if (function_exists($info['process callback'])) {
+          $output = $info['process callback']($readme, NULL);
+        }
+        else {
+          $output = '<pre>' . $readme . '</pre>';
+        }
+      }
+      else {
+        $output = '<pre>' . $readme . '</pre>';
+      }
+
+      return $output;
+  }
+}
+
+/**
  * Implements hook_mail_alter().
  */
 function uc_pdf_invoice_mail_mail_alter(&$message) {
@@ -53,7 +91,7 @@ function uc_pdf_invoice_mail_mail_alter(&$message) {
 function uc_pdf_invoice_mail_add_attachment(array &$message) {
   if(!empty($message['params']['attachment']))
   {
-      $params = $message['params'];
+    $params = $message['params'];
     $attachment = $params['attachment'];
     $filename = basename($attachment['filename']);
     $filecontent = $attachment['filecontent'];
@@ -79,3 +117,5 @@ function uc_pdf_invoice_mail_add_attachment(array &$message) {
     $message['body'] = [$header];
   }
 }
+
+
