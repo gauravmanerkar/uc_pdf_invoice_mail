@@ -1,8 +1,9 @@
 name: Ubercart PDF Invoice Mail
-description: 'Generates PDF of order invoice and sends as attachment in mail.'
+description: 'Generates PDF of invoice and sends to customer in order mail.'
 package: Ubercart - extra
 type: module
 core: 8.x
+core_version_requirement: ^8 || ^9
 dependencies:
   - drupal:uc_order
   - drupal:uc_product

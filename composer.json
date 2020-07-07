@@ -1,0 +1,24 @@
+{
+  "name": "drupal/uc_pdf_invoice_mail",
+  "description": "Generates PDF of order invoice and sends to customer.",
+  "keywords": ["Ecommerce", "Drupal"],
+  "type": "drupal-module",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://drupal.org/project/uc_pdf_invoice_mail",
+  "authors": [
+    {
+        "name": "Gaurav Manerkar",
+        "homepage": "https://www.drupal.org/u/gaurav_manerkar",
+        "role": "Maintainer"
+    }
+  ],
+  "support": {
+    "issues": "https://drupal.org/project/issues/uc_pdf_invoice_mail",
+    "source": "http://cgit.drupalcode.org/uc_pdf_invoice_mail"
+  },
+  "require": {
+    "drupal/core": "^8 || ^9",
+    "drupal/ubercart": "^4.0",
+    "dompdf/dompdf": "^0.8.5"
+  }
+}

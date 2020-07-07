@@ -2,10 +2,8 @@
 
 /**
  * @file
- * Generates PDF of order invoice and sends as attachment in mail.
+ * Contains hooks for the module.
  */
-
-require_once DRUPAL_ROOT . '/vendor/autoload.php';
 
 use Dompdf\Dompdf;
 use Drupal\file\Entity\File;
@@ -16,24 +14,20 @@ use Drupal\Core\Routing\RouteMatchInterface;
  */
 function uc_pdf_invoice_mail_mail_alter(&$message) {
   if (strpos($message['id'], 'uc_order_action-mail') !== FALSE) {
-    $body        = $message['body'];
-    $invoiceData = implode("", $body);
-    if (!empty($invoiceData)) {
+    $invoice_content = implode("", $message['body']);
+    if (!empty($invoice_content)) {
       $dompdf = new Dompdf();
-      $dompdf->loadHtml($invoiceData);
+      $dompdf->loadHtml($invoice_content);
       $dompdf->render();
-
       $filename = tempnam('temporary://', 'invoice_') . '.pdf';
       $output   = $dompdf->output();
       file_put_contents($filename, $output);
-
-      $filesystem = \Drupal::service('file_system');
-
+      $file_system = \Drupal::service('file_system');
       $pdf = File::create();
       $pdf->setFileUri($filename);
       $pdf->setOwnerId(1);
       $pdf->setMimeType(\Drupal::service('file.mime_type.guesser')->guess($filename));
-      $pdf->setFileName($filesystem->basename($filename));
+      $pdf->setFileName($file_system->basename($filename));
       $pdf->setPermanent();
       $pdf->save();
       $pdf_attachment = [
@@ -58,11 +52,9 @@ function uc_pdf_invoice_mail_add_attachment(array &$message) {
     $filecontent = $attachment['filecontent'];
     $content = chunk_split(base64_encode($filecontent));
     $uid = md5(uniqid(time()));
-
     $messageHeader = &$message['headers'];
     $originalContentType = $messageHeader['Content-Type'];
     $messageHeader['Content-Type'] = "multipart/mixed; boundary=\"$uid\"";
-
     $header = "This is a multi-part message in MIME format.\r\n";
     $header .= "--$uid\r\n";
     $header .= "Content-Type: $originalContentType \r\n\r\n";
